@@ -1,11 +1,17 @@
 const mongoose=require('mongoose');
 const mongoosePaginate=require('mongoose-paginate');
 const uploader=require('./Uploader');
+const slugify=require('../plugins/slugify');
 
 let placeSchema=new mongoose.Schema({
   title:{
     type:String,
     required: true
+  },
+  slug:{
+    type:String,
+    unique:true
+
   },
   description:String,
   acceptsCreditCard:{
@@ -19,6 +25,7 @@ let placeSchema=new mongoose.Schema({
 
 });
 
+
 placeSchema.methods.updateImage=function(path,imageType){
   //Primero subir la imagen
   //Segundo guardar el lugar donde esta guardada
@@ -30,18 +37,13 @@ placeSchema.methods.saveImageUrl=function(secureUrl,imageType){
   this[imageType+'Image']=secureUrl;//Para que diga si es avatarImage o coverImage
   return this.save();
 }
-/*
-placeSchema.methods.updateImage = function(path,imageType){
-  // Primero subir la imagen
-  // Guardar el lugar
-  return uploader(path)
-    .then(secure_url => this.saveImageUrl(secure_url,imageType));
-}
+//Utilizando Hook para antes de guardar
+placeSchema.pre('save',function(next){
+   this.slug=slugify(this.title);
+   next();
+})
 
-placeSchema.methods.saveImageUrl = function(secureUrl,imageType){
-  this[imageType+'Image'] = secureUrl;
-  return this.save();
-}*/
+
 placeSchema.plugin(mongoosePaginate);
 let Place = mongoose.model('Place',placeSchema);
 
