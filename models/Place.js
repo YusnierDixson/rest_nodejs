@@ -39,10 +39,30 @@ placeSchema.methods.saveImageUrl=function(secureUrl,imageType){
 }
 //Utilizando Hook para antes de guardar
 placeSchema.pre('save',function(next){
-   this.slug=slugify(this.title);
-   next();
+   generateSlugAndContinue.call(this,0,next);
 })
 
+//funcion static para verificar cantidad de slug repetidos
+placeSchema.statics.validateSlugCount=function(slug){
+  return Place.count({slug: slug}).then(count=>{
+    if(count>0) return false;
+    return true;
+  })
+}
+
+//Generaremos los nuevos slug teniendo en cuenta si existen repetidos
+function generateSlugAndContinue(count, next){
+  this.slug=slugify(this.title);
+  if(count != 0)
+  this.slug=this.slug + "-"+count;
+
+  Place.validateSlugCount(this.slug).then(isValid=>{
+    if(!isValid)
+      return generateSlugAndContinue.call(this,count+1,next);
+
+      next();
+  })
+}
 
 placeSchema.plugin(mongoosePaginate);
 let Place = mongoose.model('Place',placeSchema);
