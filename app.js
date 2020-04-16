@@ -8,6 +8,7 @@ var logger = require('morgan');
 
 const db = require('./config/database');
 const places=require('./routes/places');
+const users=require('./routes/users');
 
 db.connect();
 var app = express();
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/places',places);
+app.use('/users',users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
