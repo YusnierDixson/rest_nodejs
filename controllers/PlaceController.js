@@ -24,7 +24,7 @@ Place.find({}).then(docs=>{
   });
 }
 
-function create(req,res) {
+function create(req,res,next) {
     //Crear nuevos lugares
     Place.create({
         title:req.body.title,
@@ -33,10 +33,11 @@ function create(req,res) {
         openHour:req.body.openHour,
         closeHour:req.body.closeHour
       }).then(doc=>{
-        res.json(doc)
+        //res.json(doc)
+        req.place=doc;
+        next();
       }).catch(err=>{
-        console.log(err);
-        res.json(err);
+        next(err);
       });
 }
 
@@ -79,34 +80,28 @@ function multerMiddleware(){
     {name: 'cover', maxCount: 1}
   ]);
 }
-/*
+
 function saveImage(req,res){
   if(req.place){
-    const files = ['avatar','cover'];
-    const promises = [];
-
-    files.forEach(imageType=>{
-      if(req.files && req.files[imageType]){
-        const path = req.files[imageType][0].path;
-        promises.push(req.place.updateImage(path,imageType));
-      }
-    })
-
-    Promise.all(promises).then(results=>{
-      console.log(results);
-      res.json(req.place);
-    }).catch(err=>{
-      console.log(err);
-      res.json(err);
-    });
-
-,multerMiddleware,saveImage
-  }else{
+    if(req.files && req.files.avatar){
+      const path=req.files.avatar[0].path;
+      uploader(path).then(result=>{
+        console.log(result);
+        res.json(req.place);
+        
+      }).catch(err=>{
+        console.log(err);
+        res.json(err);
+        
+      })
+    }
+  }
+  else{
     res.status(422).json({
-      error: req.error || 'Could not save place'
+      error:req.err||'Could not save place'
     });
   }
-}*/
+}
 
 
-module.exports={index,show,create,update,destroy,find,multerMiddleware};
+module.exports={index,show,create,update,destroy,find,multerMiddleware,saveImage};
