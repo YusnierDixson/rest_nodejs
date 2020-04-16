@@ -3,7 +3,7 @@ const upload=require('../config/upload');
 const uploader=require('../models/Uploader');
 
 function find(req,res,next) {
-  Place.findById(req.params.id)
+  Place.findOne({slug:req.params.id})
   .then(place=>{
     req.place=place;
     next();

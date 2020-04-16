@@ -39,6 +39,7 @@ placeSchema.methods.saveImageUrl=function(secureUrl,imageType){
 }
 //Utilizando Hook para antes de guardar
 placeSchema.pre('save',function(next){
+  if(this._id) return next();
    generateSlugAndContinue.call(this,0,next);
 })
 
