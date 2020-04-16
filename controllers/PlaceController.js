@@ -72,14 +72,14 @@ req.place.remove().then(doc=>{
     res.json(err);
   });
 }
-/*
+//Para recibir más de un objeto sino se utliza single, maxcout cantidad de archivos que se necesitan
 function multerMiddleware(){
   return upload.fields([
     {name: 'avatar', maxCount: 1},
     {name: 'cover', maxCount: 1}
   ]);
 }
-
+/*
 function saveImage(req,res){
   if(req.place){
     const files = ['avatar','cover'];
@@ -109,4 +109,4 @@ function saveImage(req,res){
 }*/
 
 
-module.exports={index,show,create,update,destroy,find};
+module.exports={index,show,create,update,destroy,find,multerMiddleware};
