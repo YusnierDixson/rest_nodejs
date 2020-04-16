@@ -19,15 +19,15 @@ let placeSchema=new mongoose.Schema({
 
 });
 
-placeSchema.methods.updateAvatar=function(path){
+placeSchema.methods.updateImage=function(path,imageType){
   //Primero subir la imagen
   //Segundo guardar el lugar donde esta guardada
-  return uploader(path).then(secure_url=>this.saveAvatarUrl(secure_url));
+  return uploader(path).then(secure_url=>this.saveImageUrl(secure_url,imageType));
 
 }
 
-placeSchema.methods.saveAvatarUrl=function(secureUrl){
-  this.avatarImage=secureUrl;
+placeSchema.methods.saveImageUrl=function(secureUrl,imageType){
+  this[imageType+'Image']=secureUrl;//Para que diga si es avatarImage o coverImage
   return this.save();
 }
 /*
@@ -42,7 +42,7 @@ placeSchema.methods.saveImageUrl = function(secureUrl,imageType){
   this[imageType+'Image'] = secureUrl;
   return this.save();
 }*/
-
+placeSchema.plugin(mongoosePaginate);
 let Place = mongoose.model('Place',placeSchema);
 
 module.exports=Place;

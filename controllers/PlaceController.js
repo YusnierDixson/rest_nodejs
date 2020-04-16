@@ -83,19 +83,27 @@ function multerMiddleware(){
 
 function saveImage(req,res){
   if(req.place){
-    if(req.files && req.files.avatar){
-      const path=req.files.avatar[0].path;
-      req.place.updateAvatar(path).then(result=>{
-        console.log(result);
+    const files = ['avatar','cover'];//tipos de archivoos que quiero
+    const promises = [];
+    files.forEach(imageType=>{//recorremos el arreglo=>image
+       
+      if(req.files && req.files[imageType]){//esto es lo mismo que decir req.files.avatar o cover, etc.
+        const path=req.files[imageType][0].path;
+        promises.push(req.place.updateImage(path,imageType));
+
+        }
+      })
+      Promise.all(promises).then(results=>{
+        console.log(results);
         res.json(req.place);
         
       }).catch(err=>{
         console.log(err);
         res.json(err);
         
-      })
+      });
+
     }
-  }
   else{
     res.status(422).json({
       error:req.err||'Could not save place'
