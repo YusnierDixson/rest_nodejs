@@ -85,7 +85,7 @@ function saveImage(req,res){
   if(req.place){
     if(req.files && req.files.avatar){
       const path=req.files.avatar[0].path;
-      uploader(path).then(result=>{
+      req.place.updateAvatar(path).then(result=>{
         console.log(result);
         res.json(req.place);
         

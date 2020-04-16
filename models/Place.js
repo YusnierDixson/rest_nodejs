@@ -18,7 +18,7 @@ let placeSchema=new mongoose.Schema({
   closeHour:Number
 
 });
-/*
+
 placeSchema.methods.updateAvatar=function(path){
   //Primero subir la imagen
   //Segundo guardar el lugar donde esta guardada
@@ -26,6 +26,11 @@ placeSchema.methods.updateAvatar=function(path){
 
 }
 
+placeSchema.methods.saveAvatarUrl=function(secureUrl){
+  this.avatarImage=secureUrl;
+  return this.save();
+}
+/*
 placeSchema.methods.updateImage = function(path,imageType){
   // Primero subir la imagen
   // Guardar el lugar
