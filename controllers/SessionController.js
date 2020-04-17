@@ -1,5 +1,24 @@
 const jwt=require('jsonwebtoken');
 const secrets=require('../config/secrets');
+const User=require('..//models/User');
+
+function authenticate(req,res,next) {
+
+    User.findOne({email:req.body.email})
+    .then(user=>{
+        user.verifyPassword(req.body.password)
+        .then(valid=>{
+           if(valid){
+            req.user=user;
+            next();
+           }else{
+               next(new Error('Invalid Credentials'))
+           }
+        })
+
+    }).catch(error=>next(error));
+    
+}
 
 function generateToken(req,res,next) {
     if(!req.user) return next();
@@ -22,4 +41,4 @@ function sendToken(req,res) {
     }
 }
 
-module.exports={generateToken,sendToken}
+module.exports={generateToken,sendToken,authenticate}
