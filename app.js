@@ -4,7 +4,8 @@ var path = require('path');
 var bodyParser=require('body-parser');
 var favicon=require('serve-favicon');
 var logger = require('morgan');
-
+const jwtMiddleware=require('express-jwt');
+const secrets=require('./config/secrets');
 
 const db = require('./config/database');
 const places=require('./routes/places');
@@ -23,6 +24,13 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+//Utilizando tokens
+app.use(jwtMiddleware({
+  secret:secrets.jwtSecret
+}).unless({path:['/sessions','/users'], method:'GET'})
+)
+
 app.use('/places',places);
 app.use('/users',users);
 app.use('/sessions',sessions);

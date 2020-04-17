@@ -31,6 +31,9 @@ Place.find({}).then(docs=>{
 function create(req,res,next) {
     //Crear nuevos lugares
     const params=helpers.buildParams(validParams,req.body);
+    console.log(req.user);
+    params['_user']=req.user.id;
+    
     Place.create(params).then(doc=>{
         //res.json(doc)
         req.place=doc;
