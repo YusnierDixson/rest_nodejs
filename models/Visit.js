@@ -23,6 +23,6 @@ let visitSchema=new mongoose.Schema({
 
 visitSchema.plugin(mongoosePaginate);
 
-const Visit=mongoose.Model('Visit',visitSchema);
+const Visit=mongoose.model('Visit',visitSchema);
 
 module.exports=Visit;

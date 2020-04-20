@@ -3,6 +3,10 @@ const mongoosePaginate=require('mongoose-paginate');
 const uploader=require('./Uploader');
 const slugify=require('../plugins/slugify');
 
+const Visit = require('./Visit');
+
+
+
 let placeSchema=new mongoose.Schema({
   title:{
     type:String,
@@ -56,6 +60,12 @@ placeSchema.statics.validateSlugCount=function(slug){
     return true;
   })
 }
+
+placeSchema.virtual('visits').get(function(){
+
+  return Visit.find({'_place': this._id}).sort('-id');
+});
+
 
 //Generaremos los nuevos slug teniendo en cuenta si existen repetidos
 function generateSlugAndContinue(count, next){
