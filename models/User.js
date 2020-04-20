@@ -1,6 +1,7 @@
 const mongoose=require('mongoose');
 const mongooseBcrypt=require('mongoose-bcrypt');
-const Place=require('../models/Place');
+const Place=require('./Place');
+const FavoritePlace=require('./FavoritePlace');
 
 let userSchema= new mongoose.Schema({
     email:{
@@ -31,6 +32,14 @@ userSchema.post('save',function(user,next){
   
 userSchema.virtual('places').get(function(){
   return Place.find({'_user':this._id});
+})
+//Buscar todos los favoritos del usuario
+userSchema.virtual('favorites').get(function(){
+  return FavoritePlace.find({'_user':this._id},{'_place':true})
+  .then(favs=>{
+    let placeIds=favs.map(fav=>fav._place);
+    return Place.find({'_id':{$in:placeIds}})
+  })
 })
 
 userSchema.plugin(mongooseBcrypt);
