@@ -26,9 +26,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Utilizando tokens
-app.use(jwtMiddleware({
-  secret:secrets.jwtSecret
-}).unless({path:['/sessions','/users'], method:'GET'})
+app.use(
+  jwtMiddleware({secret: secrets.jwtSecret})
+  .unless({path:['/sessions','/users'], method:'GET'})
 )
 
 app.use('/places',places);

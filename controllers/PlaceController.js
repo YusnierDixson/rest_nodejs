@@ -10,6 +10,7 @@ function find(req,res,next) {
   Place.findOne({slug:req.params.id})
   .then(place=>{
     req.place=place;
+    req.mainObj=place;
     next();
   }).catch(err=>{
     next(err);

@@ -1,5 +1,6 @@
 const User=require('../models/User');
 
+
 const buildParams= require('./helpers').buildParams;
 
 const validParams=['email','name','password'];
@@ -17,5 +18,16 @@ function create(req,res,next) {
     })
 }
 
+function myplaces(req,res) {
+    User.findOne({'_id':req.user.id}).then(user=>{
+        console.log(user.places);
+        user.places.then(places=>{
+            res.json(places);
+        })        
+    }).catch(err=>{
+        console.log(err);
+        res.json(err);        
+    })
+}
 
-module.exports={create};
+module.exports={create,myplaces};
